@@ -21,19 +21,34 @@ class PlayerConstant {
   bool get isPlaying => _playerState == PlayerState.playing;
 
   Duration get position => _position;
-  Duration _position = Duration(milliseconds: 0);
+  Duration _position = Duration();
 
   Duration get duration => _duration;
-  Duration _duration = Duration(milliseconds: 0);
+  Duration _duration = Duration();
 
+  Function(Duration) seekTo;
+
+
+  // final d = assetsAudioPlayer.current.value.audio.duration;
   PlayerBloc playerBloc = PlayerBloc();
 
-  Future play(String url) async {
+  Future play(String url, String author_name, String title, String image) async {
+
     playerBloc.query.add(true);
     _playerState = PlayerState.playing;
-    await assetsAudioPlayer.open(Audio.network(url),
-        loopMode: LoopMode.single, showNotification: false,);
+    final audio = Audio.network(url,
+      metas: Metas(
+        title:  title,
+        artist: author_name,
+        image: MetasImage.network(image), //can be MetasImage.network
+      ),
+    );
+    await assetsAudioPlayer.open(audio,
+      loopMode: LoopMode.single, showNotification: true,);
     assetsAudioPlayer.play();
+    // assetsAudioPlayer.next();
+    // assetsAudioPlayer.previous();
+
   }
 
   Future pause() async {
@@ -47,4 +62,31 @@ class PlayerConstant {
     _playerState = PlayerState.stopped;
     playerBloc.query.add(false);
   }
+
+
+  // Stream<Duration> getLength() {
+  //   // var onDurationChanged;
+  //   return assetsAudioPlayer.;
+  // }
+  Stream<Duration> getPosition() {
+    return assetsAudioPlayer.currentPosition;
+  }
+
+  Future<int> changeSlider(Duration d){
+    return assetsAudioPlayer.seek(d);
+  }
+
+
+  Future next() async{
+    await assetsAudioPlayer.next();
+    _playerState = PlayerState.playing;
+    playerBloc.query.add(true);
+}
+  Future previous() async{
+    await assetsAudioPlayer.previous();
+    _playerState = PlayerState.playing;
+    playerBloc.query.add(true);
+
+  }
+
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:singleton/DataModal.dart';
 import 'package:singleton/UI/StoryDetailScreen.dart';
+import 'package:singleton/utils/SharedPref.dart';
+import 'package:singleton/utils/SharedPrefConstants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homepage extends StatefulWidget {
   final Data data;
@@ -16,6 +20,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  // SharedPreferences prefs=await SharedPreferences.getInstance();
   bool showtextfield = true;
   bool _liked = false;
   String device;
@@ -142,10 +147,11 @@ class _HomepageState extends State<Homepage> {
                                                         ? 35
                                                         : 25,
                                                   ),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      _liked = !_liked;
-                                                    });
+                                                  onPressed: () => {
+                                                    // setState(() {
+                                                    //   _liked = !_liked;
+                                                    // });
+                                                    favoirate()
                                                   },
                                                 ))
                                           ],
@@ -207,5 +213,16 @@ class _HomepageState extends State<Homepage> {
         .collection('Stories')
         .where('categoryId', isEqualTo: "VoHKjfbSDjI1hxH12lXC")
         .get();
+  }
+
+  favoirate() async {
+    // favoirate(querySnapshot.docs[i]);
+    List<String> stringsList =
+        querySnapshot.docs.map((i) => i.toString()).toList();
+    await SharedPrefHelper().setListData("favoriteMusic", stringsList);
+    setState(() {
+      _liked = !_liked;
+    });
+    print(stringsList);
   }
 }

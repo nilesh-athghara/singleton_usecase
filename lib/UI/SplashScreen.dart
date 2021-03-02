@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:singleton/UI/Homepagenew.dart';
 
@@ -8,20 +10,28 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
+  Future<void> initState() {
+    // TODO: implement initState
     super.initState();
-    if (mounted) call();
+
+    if (mounted) {
+      call();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // TODO: implement build
     return Container(
       color: Colors.black,
       alignment: Alignment.center,
       child: Text(
-        "Horror Creepy Scary Stories!",
+        " Horror Creepy Scary Stories",
         style: TextStyle(
-            color: Colors.white, fontSize: 18, decoration: TextDecoration.none),
+            color: Colors.white,
+            fontSize: 24,
+            fontFamily: 'StrangerCreature',
+            decoration: TextDecoration.none),
       ),
     );
   }

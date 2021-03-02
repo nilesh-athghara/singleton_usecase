@@ -41,7 +41,8 @@ class _HomeScreenState extends State<StoryDetailScreen>
     if (playerConstant.isPlaying) {
       await playerConstant.stop();
     }
-    playerConstant.play(widget.data.audio);
+    playerConstant.play(widget.data.audio, widget.data.author_name,
+        widget.data.image, widget.data.title);
   }
 
   @override
@@ -202,8 +203,11 @@ class _HomeScreenState extends State<StoryDetailScreen>
                                             onPressed: () {
                                               data.data
                                                   ? playerConstant.pause()
-                                                  : playerConstant
-                                                      .play(widget.data.audio);
+                                                  : playerConstant.play(
+                                                      widget.data.audio,
+                                                      widget.data.author_name,
+                                                      widget.data.image,
+                                                      widget.data.title);
                                             },
                                           );
                                         })),

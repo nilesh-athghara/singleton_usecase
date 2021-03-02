@@ -8,7 +8,7 @@ class Data{
   String image;
   String title;
   Data(this.audio,
-     this.author_name,
+      this.author_name,
       this.categoryId,
       this.description,
       this.image,
@@ -42,7 +42,7 @@ class Data{
 
 
 
-}
+  }
 // Data.fromJson(Map<String, dynamic> parsedJSON)
 //     : AudioUrl = parsedJSON['AudioUrl'],
 //       ImgUrl = parsedJSON['ImgUrl'],

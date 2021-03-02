@@ -163,6 +163,8 @@ class _HomeScreenState extends State<FullScreenMusic> {
                                           // This Icon
                                         ],
                                       )),
+
+                                  // AudioWidget(),
                                   slider(),
                                   Padding(
                                       padding:
@@ -172,7 +174,9 @@ class _HomeScreenState extends State<FullScreenMusic> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "1.0",
+                                            // "1.0",
+                                            playerConstant.position.inSeconds
+                                                .toString(),
                                             style: TextStyle(
                                                 color: Colors.grey,
                                                 fontSize:
@@ -205,7 +209,8 @@ class _HomeScreenState extends State<FullScreenMusic> {
                                               icon: new Image.asset(
                                                 'assets/backword.png',
                                               ),
-                                              onPressed: () => {null},
+                                              onPressed: () =>
+                                                  {playerConstant.previous()},
                                               // iconSize: 50,
                                               iconSize:
                                                   widget.device == "tablet"
@@ -235,14 +240,19 @@ class _HomeScreenState extends State<FullScreenMusic> {
                                                     data.data
                                                         ? playerConstant.pause()
                                                         : playerConstant.play(
-                                                            widget.data.audio);
+                                                            widget.data.audio,
+                                                            widget.data
+                                                                .author_name,
+                                                            widget.data.image,
+                                                            widget.data.title);
                                                   },
                                                 );
                                               }),
                                           IconButton(
                                               icon: new Image.asset(
                                                   'assets/forward.png'),
-                                              onPressed: () => {null},
+                                              onPressed: () =>
+                                                  {playerConstant.next()},
                                               iconSize:
                                                   widget.device == "tablet"
                                                       ? 70
@@ -258,22 +268,34 @@ class _HomeScreenState extends State<FullScreenMusic> {
 
   Widget slider() {
     return SliderTheme(
-      data: SliderTheme.of(context).copyWith(
-        activeTrackColor: Colors.white,
-        inactiveTrackColor: Colors.grey[500],
-        trackHeight: 3.0,
-        thumbColor: Colors.white,
-        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0),
-      ),
-      child: Slider(
-          value: 10,
-          min: 0.0,
-          max: 30.0,
-          onChanged: (value) {
-            setState(() {
-              value = value;
-            });
-          }),
-    );
+        data: SliderTheme.of(context).copyWith(
+          activeTrackColor: Colors.white,
+          inactiveTrackColor: Colors.grey[500],
+          trackHeight: 3.0,
+          thumbColor: Colors.white,
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0),
+        ),
+        child: StreamBuilder<Duration>(
+            initialData: Duration(seconds: 0),
+            stream: playerConstant.assetsAudioPlayer.currentPosition,
+            builder: (BuildContext context, AsyncSnapshot<Duration> snapshot) {
+              print(snapshot.data.inSeconds.toDouble().toString());
+              return Slider(
+                  value: snapshot.data.inSeconds.toDouble(),
+                  max: playerConstant
+                      .assetsAudioPlayer.current.value.audio.duration.inSeconds
+                      .toDouble(),
+                  min: 0.0,
+                  onChanged: (value) {
+                    playerConstant.assetsAudioPlayer
+                        .seek(Duration(seconds: value.toInt()));
+                  });
+            }));
+  }
+
+  void seekToSecond(int second) {
+    Duration newDuration = Duration(seconds: second);
+
+    playerConstant.assetsAudioPlayer.seek(newDuration);
   }
 }
